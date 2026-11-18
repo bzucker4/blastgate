@@ -2,9 +2,8 @@
 
 **Version 1.0 (DRAFT, pending legal review)**
 
-This is a plain-language agreement. It is written to be read, not decoded. Where it says "you," it means the organization that bought the license. Where it says "we," it means the licensor named below.
+This is a plain-language agreement. It is written to be read, not decoded. Where it says "you," it means the organization that bought the license. Where it says "we," it means Threshold Labs, the maintainer of Blastgate.
 
-**Licensor:** [LICENSOR LEGAL NAME], doing business as Threshold Labs ("we")
 **Contact:** atlascreative95@gmail.com
 **Software:** Blastgate, published at https://github.com/bzucker4/blastgate and on npm as `blastgate` (the "Software")
 
