@@ -3,8 +3,8 @@ Output docs/demo.gif
 Output docs/demo.mp4
 
 Set Shell "bash"
-Set FontSize 15
-Set Width 1280
+Set FontSize 14
+Set Width 1400
 Set Height 640
 Set Padding 24
 Set Theme "Catppuccin Mocha"
