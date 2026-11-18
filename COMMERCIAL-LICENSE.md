@@ -4,7 +4,7 @@
 
 This is a plain-language agreement. It is written to be read, not decoded. Where it says "you," it means the organization that bought the license. Where it says "we," it means the licensor named below.
 
-**Licensor:** Brian (GitHub: bzucker4), an individual doing business as Threshold Labs ("we")
+**Licensor:** Brian Zucker (GitHub: bzucker4), an individual doing business as Threshold Labs ("we")
 **Contact:** atlascreative95@gmail.com
 **Software:** Blastgate, published at https://github.com/bzucker4/blastgate and on npm as `blastgate` (the "Software")
 
