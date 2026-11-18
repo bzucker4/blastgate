@@ -49,4 +49,4 @@ Enterprise features are on the roadmap and ship to commercial customers first. I
 
 **[Buy now](https://buy.polar.sh/polar_cl_pOeAF8Wkt8KHlWjNHZKAHe4BNiAhW3548PLsh0ivt8D)** or email atlascreative95@gmail.com.
 
-This page is a summary, not legal advice. The license agreement you receive at purchase governs.
+This page is a summary, not legal advice. The full terms are in [COMMERCIAL-LICENSE.md](COMMERCIAL-LICENSE.md), which governs.
