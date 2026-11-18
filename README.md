@@ -286,7 +286,7 @@ If you embed Blastgate in a proprietary product, offer it as part of a hosted or
 - Slack approvals with escalation
 - Legal indemnity and priority support
 
-**[Buy a commercial license](<POLAR_CHECKOUT_URL>)** or read [COMMERCIAL.md](COMMERCIAL.md). Run `blastgate license` for the short version.
+**[Buy a commercial license](https://buy.polar.sh/polar_cl_pOeAF8Wkt8KHlWjNHZKAHe4BNiAhW3548PLsh0ivt8D)** or read [COMMERCIAL.md](COMMERCIAL.md). Run `blastgate license` for the short version.
 
 ## Sponsors
 

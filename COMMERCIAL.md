@@ -43,10 +43,10 @@ Enterprise features are on the roadmap and ship to commercial customers first. I
 
 | Plan | Price | For |
 | --- | --- | --- |
-| Commercial seat license | see checkout | Small teams embedding Blastgate or running it in a hosted product |
+| Commercial license | $299/year per organization | Teams embedding Blastgate or running it in a hosted product |
 | Commercial + support | $500/mo via [GitHub Sponsors](https://github.com/sponsors/bzucker4) | License plus direct support channel |
 | Enterprise | contact | RBAC sync, compliance exports, SSO, indemnity |
 
-**[Buy now](<POLAR_CHECKOUT_URL>)** or email atlascreative95@gmail.com.
+**[Buy now](https://buy.polar.sh/polar_cl_pOeAF8Wkt8KHlWjNHZKAHe4BNiAhW3548PLsh0ivt8D)** or email atlascreative95@gmail.com.
 
 This page is a summary, not legal advice. The license agreement you receive at purchase governs.

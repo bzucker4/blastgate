@@ -6,14 +6,13 @@ Everything you need to run the launch from your plan, with dates filled in. Days
 
 ## Placeholders to fill before launch
 
-Search the repo for these and replace them:
+Both are filled in now:
 
 | Placeholder | Where | What to put |
 | --- | --- | --- |
-| `<POLAR_CHECKOUT_URL>` | README.md, COMMERCIAL.md, .github/FUNDING.yml | Your Polar.sh (or Stripe Payment Link) checkout for the commercial license |
+| (done) | README.md, COMMERCIAL.md, .github/FUNDING.yml | Polar checkout: Blastgate Commercial License, $299/year, Threshold Labs org |
 | (done) | COMMERCIAL.md | Licensing email set to atlascreative95@gmail.com |
 
-`grep -rn "<POLAR_CHECKOUT_URL>" .` finds the rest.
 
 ## Phase 1: pre-launch (Nov 24 to Dec 7)
 
