@@ -1,0 +1,58 @@
+{
+  "name": "blastgate",
+  "version": "0.1.0",
+  "description": "Deterministic policy firewall and approval gate for MCP servers and autonomous CLI agents. Zero dependencies.",
+  "type": "module",
+  "bin": {
+    "blastgate": "bin/blastgate.js"
+  },
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "files": [
+    "bin",
+    "src",
+    "policies",
+    "examples",
+    "LICENSE",
+    "COMMERCIAL.md",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "test": "node --test test/*.test.js",
+    "demo": "node bin/blastgate.js demo",
+    "bench": "node bench/bench.js",
+    "lint:policies": "node bin/blastgate.js lint policies/default.yaml && node bin/blastgate.js lint policies/demo.yaml"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "ai-agents",
+    "agent-security",
+    "policy-engine",
+    "firewall",
+    "guardrails",
+    "human-in-the-loop",
+    "audit-log",
+    "claude-code",
+    "cursor",
+    "sandbox"
+  ],
+  "author": "bzucker4",
+  "license": "AGPL-3.0-only",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bzucker4/blastgate.git"
+  },
+  "homepage": "https://github.com/bzucker4/blastgate#readme",
+  "bugs": {
+    "url": "https://github.com/bzucker4/blastgate/issues"
+  },
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/bzucker4"
+  }
+}

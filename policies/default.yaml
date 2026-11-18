@@ -1,0 +1,84 @@
+# Blastgate built-in default policy.
+# Used when no --policy, $BLASTGATE_POLICY, ./blastgate.yaml or
+# ~/.blastgate/policy.yaml is found. Run `blastgate init` to get an
+# editable copy.
+#
+# Precedence is fixed: any deny wins, then approve, then allow, then default.
+
+version: 1
+name: default
+description: Sensible guardrails for a single developer running coding agents.
+default: allow
+
+approval:
+  channel: tty            # tty | webhook | auto-deny | auto-approve
+  timeout_seconds: 120    # no answer = denied
+
+audit:
+  path: .blastgate/audit.jsonl
+
+exec:
+  env_strip: ["*_API_KEY", "*_SECRET*", "*_TOKEN", "*PASSWORD*", "AWS_SECRET_ACCESS_KEY", "AWS_SESSION_TOKEN"]
+  timeout_seconds: 0      # 0 = no timeout
+
+rules:
+  - id: no-destructive-sql
+    description: DROP, TRUNCATE, ALTER ... DROP, GRANT/REVOKE, and DELETE/UPDATE without WHERE.
+    action: deny
+    match:
+      sql: destructive
+    message: Rewrite the statement with a WHERE clause, or ask the user to run it.
+
+  - id: approve-destructive-shell
+    description: rm -rf, mkfs, dd to devices, force pushes, git reset --hard, terraform destroy, curl | sh.
+    action: approve
+    match:
+      shell: destructive
+
+  - id: no-secret-files
+    description: Keys and credentials stay out of agent context.
+    action: deny
+    match:
+      path_inside: ["~/.ssh", "~/.aws", "~/.gnupg", "~/.config/gcloud", "~/.kube", "~/.docker/config.json", "~/.netrc", ".env", ".env.local", ".env.production"]
+
+  - id: writes-stay-in-project
+    description: File writes outside the working directory and /tmp need approval.
+    action: approve
+    match:
+      kind: fs
+      tool: ["Write", "Edit", "MultiEdit", "NotebookEdit"]
+      path_outside: [".", "/tmp"]
+
+  - id: no-exfil-endpoints
+    description: Common data drop and tunnel services.
+    action: deny
+    match:
+      domain_in: ["*.ngrok.io", "*.ngrok-free.app", "webhook.site", "*.requestcatcher.com", "requestbin.*", "*.pipedream.net", "pastebin.com", "transfer.sh", "*.trycloudflare.com"]
+
+  - id: approve-production
+    description: Anything that names a production server needs a human.
+    action: approve
+    match:
+      server: ["*prod*", "*production*"]
+
+  - id: approve-side-effects
+    description: Outbound messages, webhooks, deploys and payments.
+    action: approve
+    match:
+      kind: mcp
+      tool: ["*webhook*", "*send_email*", "*send_message*", "*deploy*", "*publish*", "*payment*", "*charge*", "*refund*", "*transfer*"]
+
+  - id: loop-guard
+    description: The same call repeated more than 5 times a minute is a runaway loop.
+    action: deny
+    match:
+      tool: "*"
+    limit: { max: 5, per_seconds: 60, same_args: true }
+    message: You have made this exact call 5 times in a minute. Stop retrying it. Explain the problem to the user or try a different approach.
+
+  - id: rate-cap
+    description: Hard ceiling on total calls.
+    action: deny
+    match:
+      tool: "*"
+    limit: { max: 120, per_seconds: 60 }

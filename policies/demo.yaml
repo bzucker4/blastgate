@@ -1,0 +1,42 @@
+# Policy used by `blastgate demo`. Same ideas as the default policy,
+# tuned for a 20-second walkthrough against a mock Postgres MCP server.
+
+version: 1
+name: demo
+default: allow
+
+approval:
+  channel: auto-deny      # the demo never waits; use tty or webhook in real use
+  timeout_seconds: 30
+
+audit:
+  path: .blastgate/demo-audit.jsonl
+
+rules:
+  - id: no-destructive-sql
+    action: deny
+    match:
+      tool: ["*query*", "*sql*"]
+      sql: destructive
+
+  - id: approve-destructive-shell
+    action: approve
+    match:
+      shell: destructive
+
+  - id: fs-jail
+    action: deny
+    match:
+      tool: ["*write*", "*file*"]
+      path_outside: ["./workspace"]
+
+  - id: egress-allowlist
+    action: deny
+    match:
+      domain_not_in: ["api.github.com", "*.anthropic.com", "registry.npmjs.org"]
+
+  - id: loop-guard
+    action: deny
+    match:
+      tool: "*"
+    limit: { max: 3, per_seconds: 60, same_args: true }

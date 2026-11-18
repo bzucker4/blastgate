@@ -1,0 +1,21 @@
+name: Detector gap (non-sensitive)
+description: A destructive action a built-in detector should catch. For real bypasses, use private reporting (SECURITY.md).
+labels: [detector]
+body:
+  - type: textarea
+    id: action
+    attributes:
+      label: Action JSON
+      description: Paste what you passed to `blastgate check`
+      render: json
+    validations:
+      required: true
+  - type: input
+    id: expected
+    attributes:
+      label: Expected decision
+      placeholder: deny
+  - type: input
+    id: version
+    attributes:
+      label: blastgate --version

@@ -1,0 +1,15 @@
+name: Feature request
+description: Something Blastgate should do
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What are you trying to protect against?
+    validations:
+      required: true
+  - type: textarea
+    id: policy
+    attributes:
+      label: The policy you wish you could write
+      render: yaml

