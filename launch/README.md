@@ -14,6 +14,12 @@ Both are filled in now:
 | (done) | COMMERCIAL.md | Licensing email set to atlascreative95@gmail.com |
 
 
+## Status (updated Nov 18)
+
+Done: repo public, CI green, npm 0.1.0 live, 11 issues seeded, Polar checkout ($299/yr) with agreement link, Sponsors tiers live, demo MP4/GIF recorded, Claude Code configs tested, X thread scheduled for Dec 8 9:00 AM ET (3 posts + video), directory branches pushed (`add-blastgate` on bzucker4/awesome-mcp-servers and bzucker4/awesome-ai-agents, PRs not opened yet).
+
+Left: Dev.to draft (needs sign-in), Bluesky thread (no native scheduling, post by hand Dec 8), open the two directory PRs Dec 10, Glama/Smithery/PulseMCP forms Dec 10.
+
 ## Phase 1: pre-launch (Nov 24 to Dec 7)
 
 | Date | Task | Done when |
