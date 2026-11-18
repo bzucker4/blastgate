@@ -47,6 +47,6 @@ Enterprise features are on the roadmap and ship to commercial customers first. I
 | Commercial + support | $500/mo via [GitHub Sponsors](https://github.com/sponsors/bzucker4) | License plus direct support channel |
 | Enterprise | contact | RBAC sync, compliance exports, SSO, indemnity |
 
-**[Buy now](<POLAR_CHECKOUT_URL>)** or email `<LICENSING_EMAIL>`.
+**[Buy now](<POLAR_CHECKOUT_URL>)** or email atlascreative95@gmail.com.
 
 This page is a summary, not legal advice. The license agreement you receive at purchase governs.

@@ -11,9 +11,9 @@ Search the repo for these and replace them:
 | Placeholder | Where | What to put |
 | --- | --- | --- |
 | `<POLAR_CHECKOUT_URL>` | README.md, COMMERCIAL.md, .github/FUNDING.yml | Your Polar.sh (or Stripe Payment Link) checkout for the commercial license |
-| `<LICENSING_EMAIL>` | COMMERCIAL.md | The email you want licensing questions to go to |
+| (done) | COMMERCIAL.md | Licensing email set to atlascreative95@gmail.com |
 
-`grep -rn "<POLAR_CHECKOUT_URL>\|<LICENSING_EMAIL>" .` finds them all.
+`grep -rn "<POLAR_CHECKOUT_URL>" .` finds the rest.
 
 ## Phase 1: pre-launch (Nov 24 to Dec 7)
 
