@@ -20,16 +20,19 @@ export class Gate {
   /**
    * Decide on an action. With { interactive: false } an "approve" result is
    * returned as-is (for hosts like Claude Code that run their own prompt).
-   * Resolves { allowed, decision, result, approval, ms }.
+   * In shadow mode the decision is computed and logged but never enforced:
+   * nothing is blocked and no approval is requested. Resolves
+   * { allowed, decision, result, approval, ms, shadow }.
    */
   async check(input, { interactive = true, source = 'api' } = {}) {
     const action = normalizeAction(input, this.cwd);
     const t0 = performance.now();
     const result = this.engine.evaluate(action);
     const ms = performance.now() - t0;
+    const shadow = this.policy.mode === 'shadow';
     let approval = null;
-    let final = result.decision;
-    if (result.decision === 'approve' && interactive) {
+    let final = shadow ? 'allow' : result.decision;
+    if (!shadow && result.decision === 'approve' && interactive) {
       approval = await this.approve(this.policy, result);
       final = approval.approved ? 'allow' : 'deny';
     }
@@ -37,6 +40,7 @@ export class Gate {
       type: 'decision',
       source,
       policy: this.policy.name,
+      mode: shadow ? 'shadow' : 'enforce',
       decision: result.decision,
       final,
       rule: result.rule,
@@ -46,7 +50,7 @@ export class Gate {
       eval_ms: Number(ms.toFixed(4)),
       action: { kind: action.kind, server: action.server, tool: action.tool, command: action.command, args: action.args },
     });
-    return { allowed: final === 'allow', decision: final, result, approval, ms };
+    return { allowed: final === 'allow', decision: final, result, approval, ms, shadow };
   }
 
   record(event) {
@@ -60,4 +64,9 @@ export function denialText(outcome) {
   const extra = outcome.approval ? ` Approval: ${outcome.approval.note}.` : '';
   const msg = r.message ? ` ${r.message}` : ' Do not retry this exact action; choose a safer alternative or ask the user.';
   return base + extra + msg;
+}
+
+/** One-line label for logs: the decision, or what would have happened in shadow mode. */
+export function shadowNote(outcome) {
+  return outcome.shadow && outcome.result.decision !== 'allow' ? `(shadow: would ${outcome.result.decision})` : '';
 }

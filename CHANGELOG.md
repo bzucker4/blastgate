@@ -2,6 +2,12 @@
 
 All notable changes to this project are documented here. This project follows [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Added
+
+- Shadow mode: `mode: shadow` in the policy, `--shadow`, or `BLASTGATE_MODE=shadow`. Every decision is logged with what would have happened, nothing is blocked and no approval is requested. Errors still fail closed. `audit tail` marks shadow decisions.
+
 ## [0.1.0] - 2026-11-18
 
 First public release.

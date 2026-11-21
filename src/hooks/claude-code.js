@@ -5,6 +5,7 @@
 //   deny    -> permissionDecision "deny"  (Claude sees the reason)
 //   approve -> permissionDecision "ask"   (Claude Code's own approval prompt)
 //   allow   -> no output, so Claude Code's normal permission rules still apply.
+// In shadow mode every call gets no output (logged, never enforced).
 // Any internal error denies (fail closed).
 
 import { Gate, denialText } from '../gate.js';
@@ -33,6 +34,7 @@ export async function runClaudeCodeHook({ policy, stdinText, gate }) {
     gate = gate ?? new Gate(policy, { cwd: payload.cwd ?? process.cwd() });
     const outcome = await gate.check(toAction(payload), { interactive: false, source: 'claude-code' });
     const r = outcome.result;
+    if (outcome.shadow) return null;
     if (r.decision === 'deny') return respond('deny', denialText(outcome));
     if (r.decision === 'approve') return respond('ask', `[blastgate] rule "${r.rule}" requires approval: ${r.reason}`);
     return null;

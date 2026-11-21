@@ -8,7 +8,7 @@
 import { spawn } from 'node:child_process';
 import readline from 'node:readline';
 import path from 'node:path';
-import { Gate, denialText } from './gate.js';
+import { Gate, denialText, shadowNote } from './gate.js';
 import { c, log, badge } from './ui.js';
 
 export function runMcpProxy({ policy, command, args, name, quiet = false, stdin = process.stdin, stdout = process.stdout, gate }) {
@@ -19,6 +19,7 @@ export function runMcpProxy({ policy, command, args, name, quiet = false, stdin 
   const write = (obj) => stdout.write(`${JSON.stringify(obj)}\n`);
   const say = (...p) => { if (!quiet) log(c.dim('[blastgate]'), ...p); };
   let queue = Promise.resolve();
+  if (policy.mode === 'shadow') say(c.yellow('shadow mode: decisions are logged, nothing is blocked'));
 
   child.on('error', (e) => {
     log(c.red(`[blastgate] failed to start upstream MCP server "${command}": ${e.message}`));
@@ -56,8 +57,8 @@ export function runMcpProxy({ policy, command, args, name, quiet = false, stdin 
       { kind: 'mcp', server: serverName, tool: params.name, args: params.arguments ?? {} },
       { source: 'mcp' },
     );
-    const shown = outcome.approval ? outcome.decision : outcome.result.decision;
-    say(badge(shown), c.bold(`${serverName}/${params.name}`), c.dim(outcome.result.rule ? `[${outcome.result.rule}] ${outcome.result.reason}` : ''));
+    const shown = outcome.approval || outcome.shadow ? outcome.decision : outcome.result.decision;
+    say(badge(shown), c.bold(`${serverName}/${params.name}`), c.yellow(shadowNote(outcome)), c.dim(outcome.result.rule ? `[${outcome.result.rule}] ${outcome.result.reason}` : ''));
     if (outcome.allowed) {
       pending.set(m.id, { tool: params.name, t: Date.now() });
       child.stdin.write(`${JSON.stringify(m)}\n`);

@@ -209,6 +209,17 @@ blastgate check '{"kind":"shell","command":"git push --force"}'   # exit 2 = nee
 blastgate check '{"kind":"mcp","tool":"query","args":{"sql":"DROP TABLE t"}}'   # exit 1 = deny
 ```
 
+### Try a policy in shadow mode first
+
+Shadow mode runs the full policy and logs every decision, but blocks nothing and never asks for approval. Install Blastgate in front of a real agent, let it work for a day, then read what it *would* have stopped before you turn enforcement on.
+
+```bash
+blastgate mcp --shadow -- npx -y @modelcontextprotocol/server-postgres "$DATABASE_URL"
+blastgate audit tail          # ALLOW  postgres/query (shadow: would deny) [no-destructive-sql]
+```
+
+Use `--shadow` on `mcp`, `exec` or `hook claude-code`, set `mode: shadow` in the policy file, or set `BLASTGATE_MODE=shadow`. `--shadow` wins over the env var, which wins over the file, so `BLASTGATE_MODE=enforce` switches a shadow policy back on. Errors still fail closed: a policy that will not load, an invalid mode, or an internal error denies, even in shadow mode.
+
 ## Audit log
 
 Every decision and every execution result is appended to `.blastgate/audit.jsonl`. Each line holds the SHA-256 of the line before it and an Ed25519 signature from a key created on first use in `~/.blastgate/keys/` (0600). Argument values under keys that look like secrets (`password`, `token`, `api_key`, ...) are redacted, and long strings are truncated.

@@ -166,6 +166,7 @@ test('policy validation rejects mistakes with a precise location', () => {
     ['approval: { channel: webhook }\nrules: []', /webhook_url/],
     ['rules:\n  - id: x\n    action: deny\n    match: { tool: a }\n    limit: { max: 1 }', /per_seconds/],
     ['surprise: 1\nrules: []', /unknown top-level key/],
+    ['mode: audit\nrules: []', /mode: must be one of enforce, shadow/],
   ];
   for (const [y, re] of bad) {
     assert.throws(() => policy(y), (e) => e instanceof PolicyError && re.test(e.message), y);
