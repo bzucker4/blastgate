@@ -19,6 +19,7 @@ version: 1                 # required
 name: my-project           # shown in logs and approval requests
 description: optional text
 default: allow             # allow | deny | approve, used when no rule matches
+mode: enforce              # enforce | shadow (log decisions, block nothing)
 
 approval:
   channel: tty             # tty | webhook | auto-deny | auto-approve
@@ -117,6 +118,16 @@ Statements are split on `;` after removing comments and string literals. Flags `
 ```
 
 When a rule has `limit`, it only triggers once `max` matching calls have already been allowed within the sliding window. With `same_args: true` the count is per identical call (same kind, server, tool, arguments and command), which catches runaway retry loops without capping normal work. Denied calls are not counted. Windows live in memory per Blastgate process.
+
+## Shadow mode
+
+With `mode: shadow`, every call is evaluated and logged exactly as in `enforce` mode, but the result is never applied: denied calls go through, approval rules never prompt, and the Claude Code hook stays silent. The audit log records the would-be result in `decision`, what actually happened in `final` (always `allow`), and `mode: "shadow"`. `blastgate audit tail` marks these lines with `(shadow: would deny)` or `(shadow: would approve)`.
+
+Override the file for one run with `--shadow` or `$BLASTGATE_MODE` (`enforce` or `shadow`). Precedence: `--shadow`, then `$BLASTGATE_MODE`, then the file. An unknown mode is an error, and errors fail closed.
+
+Shadow mode is for trying a policy safely. It gives no protection while it is on.
+
+Rate limits still count calls in shadow mode, except calls whose would-be result is deny, so a loop guard reports a loop as soon as one starts.
 
 ## Approval channels
 

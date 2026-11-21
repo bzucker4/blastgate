@@ -14,12 +14,13 @@ export const BUILTIN_DIR = path.join(HERE, '..', 'policies');
 export const ACTIONS = ['allow', 'deny', 'approve'];
 const KINDS = ['mcp', 'shell', 'fs', 'http'];
 const CHANNELS = ['tty', 'webhook', 'auto-deny', 'auto-approve'];
+export const MODES = ['enforce', 'shadow'];
 const MATCH_KEYS = new Set([
   'kind', 'tool', 'server', 'command', 'shell', 'sql', 'args', 'any_arg',
   'path_outside', 'path_inside', 'domain_not_in', 'domain_in',
 ]);
 const RULE_KEYS = new Set(['id', 'description', 'action', 'match', 'limit', 'message']);
-const TOP_KEYS = new Set(['version', 'name', 'description', 'default', 'approval', 'audit', 'exec', 'rules']);
+const TOP_KEYS = new Set(['version', 'name', 'description', 'default', 'mode', 'approval', 'audit', 'exec', 'rules']);
 
 export class PolicyError extends Error {}
 
@@ -49,12 +50,14 @@ export function validatePolicy(p, source = 'policy') {
     name: p.name ?? path.basename(source),
     description: p.description ?? '',
     default: p.default ?? 'allow',
+    mode: p.mode ?? 'enforce',
     approval: { channel: 'tty', timeout_seconds: 120, ...(p.approval ?? {}) },
     audit: { enabled: true, path: '.blastgate/audit.jsonl', ...(p.audit ?? {}) },
     exec: { env_strip: [], timeout_seconds: 0, ...(p.exec ?? {}) },
     rules: [],
   };
   if (!ACTIONS.includes(policy.default)) fail(source, `default must be one of ${ACTIONS.join(', ')}`);
+  if (!MODES.includes(policy.mode)) fail(`${source}.mode`, `must be one of ${MODES.join(', ')}`);
   if (!CHANNELS.includes(policy.approval.channel)) fail(`${source}.approval.channel`, `must be one of ${CHANNELS.join(', ')}`);
   if (policy.approval.channel === 'webhook' && !policy.approval.webhook_url) fail(`${source}.approval`, 'webhook channel needs webhook_url');
   if (typeof policy.approval.timeout_seconds !== 'number' || policy.approval.timeout_seconds <= 0) fail(`${source}.approval.timeout_seconds`, 'must be a positive number');
@@ -122,9 +125,18 @@ export function resolvePolicyPath(explicit, cwd = process.cwd()) {
   return path.join(BUILTIN_DIR, 'default.yaml');
 }
 
-export function loadPolicy(explicit, cwd) {
+/**
+ * Load and validate a policy. The enforcement mode can be overridden:
+ * `mode` (from --shadow) wins over $BLASTGATE_MODE, which wins over the file.
+ */
+export function loadPolicy(explicit, cwd, { mode } = {}) {
   const file = resolvePolicyPath(explicit, cwd);
   const policy = parsePolicy(fs.readFileSync(file, 'utf8'), path.basename(file));
   policy.file = file;
+  const override = mode ?? process.env.BLASTGATE_MODE;
+  if (override !== undefined && override !== '') {
+    if (!MODES.includes(override)) throw new PolicyError(`BLASTGATE_MODE must be one of ${MODES.join(', ')} (got "${override}")`);
+    policy.mode = override;
+  }
   return policy;
 }

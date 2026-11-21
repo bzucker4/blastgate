@@ -119,6 +119,57 @@ test('Claude Code hook fails closed on a broken policy', (t) => {
   assert.equal(JSON.parse(r.stdout).hookSpecificOutput.permissionDecision, 'deny');
 });
 
+test('shadow mode: MCP proxy logs the would-be denial but forwards the call', async (t) => {
+  const dir = tmpdir(t);
+  const { rpc, close } = startProxy(dir, 'demo', { BLASTGATE_MODE: 'shadow' });
+  await rpc('initialize', {});
+  const r = await rpc('tools/call', { name: 'query_db', arguments: { sql: 'DROP TABLE users' } });
+  await close();
+  assert.equal(r.result.isError, undefined, 'not blocked');
+  const calls = fs.readFileSync(path.join(dir, 'calls.jsonl'), 'utf8').trim().split('\n').map((l) => JSON.parse(l));
+  assert.deepEqual(calls.map((c) => c.arguments.sql), ['DROP TABLE users'], 'reached the server');
+  const d = fs.readFileSync(path.join(dir, 'audit.jsonl'), 'utf8').trim().split('\n').map((l) => JSON.parse(l)).find((e) => e.type === 'decision');
+  assert.equal(d.mode, 'shadow');
+  assert.equal(d.decision, 'deny', 'the would-be decision is recorded');
+  assert.equal(d.final, 'allow');
+  assert.equal(d.rule, 'no-destructive-sql');
+});
+
+test('shadow mode: exec --shadow runs a denied command and says what would have happened; approvals are never requested', (t) => {
+  const dir = tmpdir(t);
+  fs.writeFileSync(path.join(dir, 'blastgate.yaml'), `version: 1
+approval: { channel: auto-deny }
+rules:
+  - id: no-touch-marker
+    action: deny
+    match: { kind: shell, command: "touch marker" }
+  - id: ask-touch-other
+    action: approve
+    match: { kind: shell, command: "touch other" }
+`);
+  const env = envFor(dir);
+  const r = spawnSync(process.execPath, [BIN, 'exec', '--shadow', '--quiet', '--', 'touch', 'marker'], { cwd: dir, env, encoding: 'utf8' });
+  assert.equal(r.status, 0, r.stderr);
+  assert.ok(fs.existsSync(path.join(dir, 'marker')));
+  assert.match(r.stderr, /shadow: would deny/);
+  const a = spawnSync(process.execPath, [BIN, 'exec', '--shadow', '--quiet', '--', 'touch', 'other'], { cwd: dir, env, encoding: 'utf8' });
+  assert.equal(a.status, 0, 'auto-deny approval channel is not consulted in shadow mode');
+  assert.match(a.stderr, /shadow: would approve/);
+  const tail = spawnSync(process.execPath, [BIN, 'audit', 'tail'], { cwd: dir, env, encoding: 'utf8' });
+  assert.match(tail.stdout, /ALLOW.*touch marker.*shadow: would deny/);
+  const enforced = spawnSync(process.execPath, [BIN, 'exec', '--quiet', '--', 'touch', 'marker'], { cwd: dir, env, encoding: 'utf8' });
+  assert.equal(enforced.status, 126, 'without --shadow the policy is enforced again');
+});
+
+test('shadow mode: Claude Code hook stays silent; policy file mode and BLASTGATE_MODE override', (t) => {
+  const dir = tmpdir(t);
+  fs.writeFileSync(path.join(dir, 'blastgate.yaml'), 'version: 1\nmode: shadow\nrules:\n  - id: no-ls\n    action: deny\n    match: { kind: shell, command: "ls" }\n');
+  const hook = (extra = {}) => spawnSync(process.execPath, [BIN, 'hook', 'claude-code'], { cwd: dir, env: envFor(dir, extra), input: JSON.stringify({ tool_name: 'Bash', tool_input: { command: 'ls' }, cwd: dir }), encoding: 'utf8' });
+  assert.equal(hook().stdout.trim(), '', 'mode: shadow in the file');
+  assert.equal(JSON.parse(hook({ BLASTGATE_MODE: 'enforce' }).stdout).hookSpecificOutput.permissionDecision, 'deny', 'env forces enforce');
+  assert.equal(JSON.parse(hook({ BLASTGATE_MODE: 'bogus' }).stdout).hookSpecificOutput.permissionDecision, 'deny', 'a bad mode fails closed');
+});
+
 test('demo runs green end to end', (t) => {
   const dir = tmpdir(t);
   const r = spawnSync(process.execPath, [BIN, 'demo', '--fast'], { cwd: dir, env: { ...process.env, NO_COLOR: '1' }, encoding: 'utf8' });

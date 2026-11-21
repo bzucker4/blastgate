@@ -30,11 +30,13 @@ ${c.bold('Usage')}
 
 ${c.bold('Global options')}
   --policy <file|name>   policy file, or a built-in name (default, demo)
+  --shadow               log every decision but block nothing (try a policy safely)
                          lookup order: --policy, $BLASTGATE_POLICY, ./blastgate.yaml,
                          ~/.blastgate/policy.yaml, built-in "default"
 
 ${c.bold('Environment')}
   BLASTGATE_APPROVAL   override approval channel (tty | webhook | auto-deny | auto-approve)
+  BLASTGATE_MODE       override policy mode (enforce | shadow); --shadow wins over it
   BLASTGATE_AUDIT      override audit log path
   BLASTGATE_HOME       key directory root (default ~/.blastgate)
   NO_COLOR             disable colors
@@ -77,6 +79,7 @@ async function readStdin() {
 export async function main(argv) {
   const [cmd, ...restArgv] = argv;
   const { flags, pos, rest } = parseArgs(restArgv);
+  const load = (file = flags.policy) => loadPolicy(file, undefined, { mode: flags.shadow ? 'shadow' : undefined });
 
   switch (cmd) {
     case undefined:
@@ -109,9 +112,8 @@ export async function main(argv) {
     }
 
     case 'lint': {
-      const file = pos[0] ?? flags.policy;
-      const policy = loadPolicy(file);
-      console.log(`${c.green('ok')} ${path.relative(process.cwd(), policy.file) || policy.file}: ${policy.rules.length} rules, default ${policy.default}, approvals via ${policy.approval.channel}`);
+      const policy = load(pos[0] ?? flags.policy);
+      console.log(`${c.green('ok')} ${path.relative(process.cwd(), policy.file) || policy.file}: ${policy.rules.length} rules, default ${policy.default}, approvals via ${policy.approval.channel}${policy.mode === 'shadow' ? `, ${c.yellow('shadow mode (not enforced)')}` : ''}`);
       return 0;
     }
 
@@ -127,21 +129,21 @@ export async function main(argv) {
 
     case 'mcp': {
       if (rest.length === 0) throw new PolicyError('usage: blastgate mcp [--name N] -- <server command> [args...]');
-      const policy = loadPolicy(flags.policy);
+      const policy = load();
       return runMcpProxy({ policy, command: rest[0], args: rest.slice(1), name: flags.name, quiet: Boolean(flags.quiet) });
     }
 
     case 'exec': {
       const argvToRun = rest.length ? rest : pos;
       if (argvToRun.length === 0) throw new PolicyError('usage: blastgate exec -- <command> [args...]');
-      const policy = loadPolicy(flags.policy);
+      const policy = load();
       return runExec({ policy, argv: argvToRun, quiet: Boolean(flags.quiet) });
     }
 
     case 'hook': {
       if (pos[0] !== 'claude-code') throw new PolicyError('usage: blastgate hook claude-code   (more hosts are on the roadmap)');
       let policy;
-      try { policy = loadPolicy(flags.policy); } catch (e) {
+      try { policy = load(); } catch (e) {
         console.log(JSON.stringify({ hookSpecificOutput: { hookEventName: 'PreToolUse', permissionDecision: 'deny', permissionDecisionReason: `[blastgate] policy failed to load, failing closed: ${e.message}` } }));
         return 0;
       }
@@ -180,7 +182,8 @@ export async function main(argv) {
           const e = JSON.parse(l);
           if (e.type === 'decision') {
             const what = e.action?.kind === 'shell' ? `$ ${e.action.command}` : `${e.action?.server ? `${e.action.server}/` : ''}${e.action?.tool}`;
-            console.log(`${c.dim(e.ts)} ${badge(e.final)} ${what} ${c.dim(e.rule ? `[${e.rule}]` : '')}`);
+            const shadow = e.mode === 'shadow' && e.decision !== 'allow' ? c.yellow(`(shadow: would ${e.decision}) `) : '';
+            console.log(`${c.dim(e.ts)} ${badge(e.final)} ${what} ${shadow}${c.dim(e.rule ? `[${e.rule}]` : '')}`);
           } else {
             console.log(`${c.dim(e.ts)} ${c.gray(`${e.type}`)} ${c.dim(JSON.stringify({ ...e, v: undefined, seq: undefined, ts: undefined, kid: undefined, prev: undefined, hash: undefined, sig: undefined, type: undefined }))}`);
           }

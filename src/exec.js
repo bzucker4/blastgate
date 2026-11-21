@@ -2,7 +2,7 @@
 // with a scrubbed environment and optional timeout. Exit code passes through.
 
 import { spawn } from 'node:child_process';
-import { Gate, denialText } from './gate.js';
+import { Gate, denialText, shadowNote } from './gate.js';
 import { globMatch } from './match.js';
 import { c, log, badge } from './ui.js';
 
@@ -23,8 +23,9 @@ export async function runExec({ policy, argv, quiet = false, gate }) {
   const shellString = argv.length === 1 && /\s|[;&|<>$`]/.test(argv[0]);
   const outcome = await gate.check(shellString ? { kind: 'shell', command: argv[0] } : { kind: 'shell', argv }, { source: 'exec' });
   const r = outcome.result;
-  if (!quiet || !outcome.allowed) {
-    log(c.dim('[blastgate]'), badge(outcome.approval ? outcome.decision : r.decision), c.bold(r.action.command), c.dim(r.rule ? `[${r.rule}] ${r.reason}` : ''));
+  const note = shadowNote(outcome);
+  if (!quiet || !outcome.allowed || note) {
+    log(c.dim('[blastgate]'), badge(outcome.approval || outcome.shadow ? outcome.decision : r.decision), c.bold(r.action.command), c.yellow(note), c.dim(r.rule ? `[${r.rule}] ${r.reason}` : ''));
   }
   if (!outcome.allowed) {
     log(c.red(denialText(outcome)));
