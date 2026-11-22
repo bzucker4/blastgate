@@ -1,5 +1,7 @@
 # X and Bluesky thread
 
+**Post 3 changed on Nov 22 (shadow mode, Claude Code plugin).** The X thread was already scheduled with the old text: open the scheduled post on X and replace post 3 with the version below.
+
 Attach `docs/demo.mp4` (record with `vhs docs/demo.tape`) natively to post 1. Put the GitHub link in the last post, not the first, so the video post is not downranked.
 
 ## X
@@ -25,7 +27,9 @@ The whole policy is YAML. No model in the loop, same answer every time:
 Wrap any MCP server with one line: `npx blastgate mcp -- <server>`
 
 **3/3**
-Zero dependencies. Works with Claude Code (MCP + PreToolUse hook), Cursor and Windsurf. Signed, hash-chained audit log in the free tier.
+Zero dependencies. Claude Code plugin in one line, plus Cursor and Windsurf.
+
+Not sure about the rules yet? --shadow logs what it would block and blocks nothing.
 
 Try it with no API key: `npx blastgate demo`
 
@@ -42,6 +46,6 @@ Policies are plain YAML with fixed precedence: deny beats approve beats allow. N
 One line to wrap any MCP server: npx blastgate mcp -- <server>
 
 **3/3**
-Zero deps, Node 18+. Claude Code, Cursor, Windsurf. Try it without an API key: npx blastgate demo
+Zero deps, Node 18+. Claude Code plugin, Cursor, Windsurf. Try a policy safely first: --shadow logs what it would block and blocks nothing. No API key needed: npx blastgate demo
 
 github.com/bzucker4/blastgate

@@ -18,6 +18,10 @@ It is a small proxy that sits between an agent and its tools. Every MCP `tools/c
 
 Try it with no setup: `npx blastgate demo`. It runs a scripted runaway agent against a mock Postgres MCP server through the real proxy, then verifies the audit log and shows tampering being detected.
 
+The way I would actually adopt it: run it in **shadow mode** first (`--shadow`, or `BLASTGATE_MODE=shadow`). It evaluates and logs every call exactly as it would in enforce mode, but blocks nothing, so you can leave it in front of a real agent for a day and read `blastgate audit tail` to see what it would have stopped before you turn enforcement on. Errors still fail closed even in shadow mode.
+
+For Claude Code it is one line: `/plugin install blastgate --marketplace bzucker4/blastgate`. I tested that against real Claude Code sessions: it blocked `cat ~/.aws/credentials`, held `rm -rf` for approval, and stopped `DROP TABLE` at the hook and again at the MCP proxy with hooks turned off. In each case Claude read the reason and did not try another route.
+
 Some design decisions I would like feedback on:
 
 - **No model in the decision path.** I looked at "LLM as judge" guardrails and did not want a probabilistic check between an agent and `DROP TABLE`. Everything is pattern matching and path resolution, so the same call and the same policy always give the same answer.
@@ -39,6 +43,9 @@ Use both. The container limits what can happen; Blastgate decides what should ha
 
 **"Claude Code already has permission prompts."**
 It does, and the hook integration uses them: an "approve" decision becomes Claude Code's native prompt. Blastgate adds argument-level rules (SQL inside an MCP call, paths after `..` and symlink resolution, URLs), headless approvals over a webhook, loop and rate caps, a signed audit log, and the same policy across Claude Code, Cursor, Windsurf and scripts.
+
+**"I don't want it breaking my agent on day one."**
+That is what shadow mode is for. Nothing is blocked and no approvals are requested; the log records `decision` (what would have happened) next to `final: allow`, and `audit tail` marks those lines `(shadow: would deny)`. Flip it off when the log looks right.
 
 **"Regex can be bypassed."**
 Yes. That is why the README pushes allowlists for high-stakes setups and why the threat model lists the gaps. Shell detection handles chains, substitutions, quoting, and wrappers like `sudo` and `env`, but not arbitrary obfuscation.

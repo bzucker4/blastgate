@@ -14,7 +14,19 @@ Both are filled in now:
 | (done) | COMMERCIAL.md | Licensing email set to atlascreative95@gmail.com |
 
 
-## Status (updated Nov 18)
+## Status (updated Nov 22)
+
+Since Nov 18: v0.2.0 (shadow mode) and v0.2.1 (hook and proxy audit entries linked) are on npm with provenance, published by the Release workflow through npm trusted publishing (no token). Claude Code tested for real on penguin: the README configs, `blastgate init`, approvals, shadow mode, and the new Claude Code plugin (`/plugin install blastgate --marketplace bzucker4/blastgate`). Launch copy updated for shadow mode and the plugin. New: `product-hunt.md` (second wave, Dec 15) and `outreach.md` (daily, Nov 24 to Dec 7).
+
+**Two things already scheduled on other sites have old text.** Editing these files does not change them:
+- **X thread (scheduled for Dec 8):** replace post 3 with the new text in `x-bluesky-thread.md`.
+- **Dev.to draft:** add the plugin install lines to Step 4 and the new "Roll it out in shadow mode" section from `devto-tutorial.md`.
+
+Not in the plan on purpose: the official MCP Registry. It lists MCP servers that clients install and start directly; Blastgate is a proxy that needs a server to wrap, so a registry install would start it with nothing behind it.
+
+Still left before Dec 8: legal review of `COMMERCIAL-LICENSE.md`, testing in Cursor.
+
+### Status (Nov 18)
 
 Done: repo public, CI green, npm 0.1.0 live, 11 issues seeded, Polar checkout ($299/yr) with agreement link, Sponsors tiers live, demo MP4/GIF recorded, Claude Code configs tested, X thread scheduled for Dec 8 9:00 AM ET (3 posts + video), Dev.to draft saved (unpublished, AI-assisted label, 4 tags), directory branches pushed (`add-blastgate` on bzucker4/awesome-mcp-servers and bzucker4/awesome-ai-agents, PRs not opened yet).
 
@@ -35,6 +47,7 @@ Left: publish the Dev.to draft Dec 11, Bluesky thread (no native scheduling, pos
 | Thu Dec 3 | Pre-write and schedule the X and Bluesky threads (`x-bluesky-thread.md`) | Scheduled for Dec 8, 9:00 AM ET |
 | Fri Dec 4 | Draft the Dev.to post as unpublished (`devto-tutorial.md`) | Draft saved, scheduled for Dec 11 |
 | Sat Dec 5 | Fork and prep directory PR branches (`directories.md`) | Branches ready, not opened |
+| Nov 24 to Dec 7, daily | 2 or 3 helpful replies where people describe agents breaking things; issues offering policies to 5 MCP server authors | `outreach.md` |
 | Mon Dec 7 | Final pass: fresh clone, `npm test`, `npx blastgate@latest demo`, read the README top to bottom on mobile | No placeholder text left |
 
 ## Phase 2: launch week (Dec 8 to Dec 14)
@@ -48,6 +61,7 @@ Left: publish the Dev.to draft Dec 11, Bluesky thread (no native scheduling, pos
 | Thu Dec 10 | Open the directory PRs and submissions | `directories.md` |
 | Fri Dec 11 | Publish the Dev.to tutorial, cross-post to Hashnode | `devto-tutorial.md` |
 | Sat Dec 12 to Mon Dec 14 | Discord and Slack `#showcase` posts | `discord-slack.md` |
+| Tue Dec 15, 00:00 PT | Product Hunt second wave, links to the repo | `product-hunt.md` |
 
 Rule for the 48-hour window: every channel links to the **repo**, not a landing page. Stars are the signal Trending uses.
 
@@ -56,7 +70,7 @@ Rule for the 48-hour window: every channel links to the **repo**, not a landing 
 | When | Task | File |
 | --- | --- | --- |
 | Daily | Respond to every issue and PR within 2 hours of seeing it | |
-| By Tue Dec 22 | Ship v0.2.0 with the top 2 or 3 requests from launch threads. Tag the people who asked | changelog in `CHANGELOG.md` |
+| By Tue Dec 22 | Ship v0.3.0 with the top 2 or 3 requests from launch threads. Tag the people who asked. Bump `plugins/blastgate/.claude-plugin/plugin.json` too | changelog in `CHANGELOG.md` |
 | After 300+ stars | README sponsor slot outreach | `sponsorships.md` |
 | Week of Dec 15 | Newsletter pitches | `newsletters.md` |
 | Ongoing | `blastgate license` and COMMERCIAL.md already explain when a license is needed | |
