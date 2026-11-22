@@ -20,11 +20,14 @@ export class Gate {
   /**
    * Decide on an action. With { interactive: false } an "approve" result is
    * returned as-is (for hosts like Claude Code that run their own prompt).
+   * `toolUseId` is the host's id for the tool call (Claude Code's
+   * `toolu_...`). The hook and the MCP proxy both record it, so the two
+   * entries one call produces can be tied together.
    * In shadow mode the decision is computed and logged but never enforced:
    * nothing is blocked and no approval is requested. Resolves
    * { allowed, decision, result, approval, ms, shadow }.
    */
-  async check(input, { interactive = true, source = 'api' } = {}) {
+  async check(input, { interactive = true, source = 'api', toolUseId } = {}) {
     const action = normalizeAction(input, this.cwd);
     const t0 = performance.now();
     const result = this.engine.evaluate(action);
@@ -39,6 +42,7 @@ export class Gate {
     this.audit.append({
       type: 'decision',
       source,
+      ...(typeof toolUseId === 'string' && toolUseId ? { tool_use_id: toolUseId } : {}),
       policy: this.policy.name,
       mode: shadow ? 'shadow' : 'enforce',
       decision: result.decision,

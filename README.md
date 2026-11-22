@@ -224,6 +224,8 @@ Use `--shadow` on `mcp`, `exec` or `hook claude-code`, set `mode: shadow` in the
 
 Every decision and every execution result is appended to `.blastgate/audit.jsonl`. Each line holds the SHA-256 of the line before it and an Ed25519 signature from a key created on first use in `~/.blastgate/keys/` (0600). Argument values under keys that look like secrets (`password`, `token`, `api_key`, ...) are redacted, and long strings are truncated.
 
+When you run both the Claude Code hook and the MCP proxy, an MCP call is checked twice, once by each layer, and both decisions are kept in the log. Both entries carry Claude Code's `tool_use_id`, and `audit tail` shows the call once, marked `via hook+proxy`, with the stricter of the two results.
+
 ```bash
 blastgate audit tail            # recent decisions
 blastgate audit verify          # chain intact? every signature valid?

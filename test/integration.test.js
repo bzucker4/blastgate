@@ -170,6 +170,31 @@ test('shadow mode: Claude Code hook stays silent; policy file mode and BLASTGATE
   assert.equal(JSON.parse(hook({ BLASTGATE_MODE: 'bogus' }).stdout).hookSpecificOutput.permissionDecision, 'deny', 'a bad mode fails closed');
 });
 
+test('audit: the hook and the MCP proxy share a tool_use_id, and audit tail shows the call once', async (t) => {
+  const dir = tmpdir(t);
+  const env = envFor(dir);
+  const hook = (id, sql) => spawnSync(process.execPath, [BIN, 'hook', 'claude-code', '--policy', 'demo'], { cwd: dir, env, input: JSON.stringify({ tool_name: 'mcp__pg-test__query_db', tool_input: { sql }, tool_use_id: id, cwd: dir }), encoding: 'utf8' });
+  assert.equal(hook('toolu_A', 'SELECT 1').stdout.trim(), '', 'hook allows');
+  const { rpc, close } = startProxy(dir, 'demo');
+  await rpc('initialize', {});
+  const r = await rpc('tools/call', { name: 'query_db', arguments: { sql: 'SELECT 1' }, _meta: { 'claudecode/toolUseId': 'toolu_A' } });
+  assert.equal(r.result.isError, undefined);
+  await close();
+  assert.equal(JSON.parse(hook('toolu_B', 'DROP TABLE users').stdout).hookSpecificOutput.permissionDecision, 'deny');
+
+  const entries = fs.readFileSync(path.join(dir, 'audit.jsonl'), 'utf8').trim().split('\n').map((l) => JSON.parse(l));
+  const a = entries.filter((e) => e.tool_use_id === 'toolu_A');
+  assert.deepEqual(a.map((e) => `${e.type}:${e.source}`), ['decision:claude-code', 'decision:mcp', 'execution:mcp'], 'both layers and the execution carry the id');
+  const tail = spawnSync(process.execPath, [BIN, 'audit', 'tail'], { cwd: dir, env, encoding: 'utf8' }).stdout.trim().split('\n');
+  const decisions = tail.filter((l) => /ALLOW|DENY|APPROVE/.test(l));
+  assert.equal(decisions.length, 2, tail.join('\n'));
+  assert.match(decisions[0], /ALLOW\s+pg-test\/query_db via hook\+proxy/);
+  assert.match(decisions[1], /DENY\s+pg-test\/query_db \[no-destructive-sql\]/);
+  assert.doesNotMatch(decisions[1], /via/, 'a single layer is not labelled');
+  const pub = fs.readFileSync(path.join(dir, 'home', 'keys', 'ed25519.pub.pem'), 'utf8');
+  assert.equal(verifyLog(path.join(dir, 'audit.jsonl'), pub).ok, true);
+});
+
 test('demo runs green end to end', (t) => {
   const dir = tmpdir(t);
   const r = spawnSync(process.execPath, [BIN, 'demo', '--fast'], { cwd: dir, env: { ...process.env, NO_COLOR: '1' }, encoding: 'utf8' });

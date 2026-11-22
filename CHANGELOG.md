@@ -2,6 +2,12 @@
 
 All notable changes to this project are documented here. This project follows [Semantic Versioning](https://semver.org/).
 
+## [0.2.1] - 2026-11-21
+
+### Changed
+
+- Audit entries from the Claude Code hook and the MCP proxy record Claude Code's `tool_use_id`, so the two decisions one MCP call produces are tied together. `audit tail` shows such a call once, marked `via hook+proxy`, with the stricter result. Both entries stay in the log.
+
 ## [0.2.0] - 2026-11-20
 
 ### Added

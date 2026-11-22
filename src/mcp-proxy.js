@@ -53,14 +53,15 @@ export function runMcpProxy({ policy, command, args, name, quiet = false, stdin 
 
   async function decide(m) {
     const params = m.params ?? {};
+    const toolUseId = params._meta?.['claudecode/toolUseId'];
     const outcome = await gate.check(
       { kind: 'mcp', server: serverName, tool: params.name, args: params.arguments ?? {} },
-      { source: 'mcp' },
+      { source: 'mcp', toolUseId },
     );
     const shown = outcome.approval || outcome.shadow ? outcome.decision : outcome.result.decision;
     say(badge(shown), c.bold(`${serverName}/${params.name}`), c.yellow(shadowNote(outcome)), c.dim(outcome.result.rule ? `[${outcome.result.rule}] ${outcome.result.reason}` : ''));
     if (outcome.allowed) {
-      pending.set(m.id, { tool: params.name, t: Date.now() });
+      pending.set(m.id, { tool: params.name, t: Date.now(), toolUseId: typeof toolUseId === 'string' ? toolUseId : undefined });
       child.stdin.write(`${JSON.stringify(m)}\n`);
     } else {
       write({ jsonrpc: '2.0', id: m.id, result: { content: [{ type: 'text', text: denialText(outcome) }], isError: true } });
@@ -80,6 +81,7 @@ export function runMcpProxy({ policy, command, args, name, quiet = false, stdin 
         source: 'mcp',
         server: serverName,
         tool: p.tool,
+        ...(p.toolUseId ? { tool_use_id: p.toolUseId } : {}),
         ok: !msg.error && msg.result?.isError !== true,
         duration_ms: Date.now() - p.t,
       });
