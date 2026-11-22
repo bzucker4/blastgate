@@ -12,6 +12,8 @@ Use `--policy path/to/policy.yaml` to pick a policy explicitly. Decisions are pr
 
 ## Claude Code
 
+**Plugin (one step):** `/plugin install blastgate --marketplace bzucker4/blastgate` inside Claude Code, or `claude plugin install blastgate --marketplace bzucker4/blastgate` from a terminal. The plugin ships the same `PreToolUse` hook shown below, running `npx -y blastgate@0.2 hook claude-code`, so it picks up `./blastgate.yaml` when the project has one and the default policy otherwise. Add `--scope project` to commit it to the repo's `.claude/settings.json` for your whole team.
+
 Two layers, use either or both:
 
 **1. MCP servers** in `.mcp.json`:

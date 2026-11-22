@@ -1,0 +1,13 @@
+{
+  "name": "blastgate",
+  "owner": { "name": "Brian Zucker", "url": "https://github.com/bzucker4" },
+  "metadata": { "description": "Blastgate: a deterministic policy firewall for AI agent tool calls." },
+  "plugins": [
+    {
+      "name": "blastgate",
+      "source": "./plugins/blastgate",
+      "description": "Check every Claude Code tool call against a Blastgate policy before it runs. Blocks destructive SQL and shell, secret-file reads and exfil endpoints by default.",
+      "category": "security"
+    }
+  ]
+}

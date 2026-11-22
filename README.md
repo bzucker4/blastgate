@@ -85,6 +85,16 @@ Wrap any stdio MCP server by putting `npx -y blastgate mcp --name <name> --` in 
 
 ### Claude Code
 
+Fastest: install the plugin. It adds the `PreToolUse` hook that checks every tool call, built-in and MCP, against `./blastgate.yaml` or the default policy:
+
+```
+/plugin install blastgate --marketplace bzucker4/blastgate
+```
+
+Or from a terminal: `claude plugin install blastgate --marketplace bzucker4/blastgate`. Needs Claude Code 2.1.275 or later. To try it without blocking anything first, start Claude Code with `BLASTGATE_MODE=shadow`.
+
+To wire it up by hand instead, or to add the MCP proxy layer as well:
+
 MCP server (`.mcp.json` in your project, or `claude mcp add`):
 
 ```json

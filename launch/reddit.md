@@ -17,6 +17,7 @@ So I built a small stdio proxy that checks every `tools/call` against a YAML pol
 3. **Resolve paths for real.** `workspace/../../etc/passwd` and `workspace/link-to-etc/passwd` both need to count as `/etc`. That means `path.resolve` plus `realpath` on the longest existing prefix.
 4. **Return denials as tool results.** If you return a JSON-RPC error, a lot of agents crash or retry. A normal result with `isError: true` and a reason ("rule no-destructive-sql: DELETE without WHERE") usually makes the model rewrite the call.
 5. **Loop guard by identical arguments.** Counting identical calls per minute catches runaway loops without capping normal work.
+6. **Roll it out in shadow mode.** Nobody trusts a new gate on day one. Shadow mode evaluates and logs every call but blocks nothing, so you can run it for a day and read what it would have stopped before enforcing.
 
 No model is involved in the decision, which was the point: I did not want a probabilistic judge between an agent and my database.
 
@@ -38,6 +39,7 @@ What I ended up doing, for discussion:
 - A proxy in the tool-call path so the same rules apply in Claude Code, Cursor and scripts
 - Human approval for a short list of side effects (prod, deploys, payments, force pushes) with timeout meaning deny
 - A hash-chained, signed log of every decision so "what did the agent do last night" has an answer you can verify
+- Roll-out in shadow mode: new rules run for a few days logging only (`decision: deny`, `final: allow`) before they enforce, the same way you would canary a WAF rule
 
 The trade-off I keep going back and forth on: blocklists (catch `rm -rf`, destructive SQL) are friendly but bypassable; allowlists (`default: deny`) are safe but annoying. Right now I use blocklists locally and allowlists for anything touching prod.
 

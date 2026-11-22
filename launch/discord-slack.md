@@ -10,7 +10,7 @@ Question for people who know the spec better than me: for denied calls, is a too
 
 ## Claude Code / Anthropic community
 
-Made a PreToolUse hook + MCP wrapper that blocks destructive SQL, hidden `rm -rf`, secret file reads and runaway loops, with "approve" mapped to Claude Code's own permission prompt. Zero deps, `npx blastgate demo` to see it.
+Made a Claude Code plugin (PreToolUse hook, plus an optional MCP wrapper) that blocks destructive SQL, hidden `rm -rf`, secret file reads and runaway loops, with "approve" mapped to Claude Code's own permission prompt. Install: `/plugin install blastgate --marketplace bzucker4/blastgate`. Run it with `BLASTGATE_MODE=shadow` first if you want to see what it would block before it blocks anything. Zero deps, `npx blastgate demo` to see it.
 
 Question: do you run the hook on `*` or only on Bash/Write/Edit? Curious what the latency tolerance is for people. Repo: https://github.com/bzucker4/blastgate
 

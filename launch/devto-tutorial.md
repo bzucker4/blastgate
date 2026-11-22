@@ -102,7 +102,13 @@ That matters. A protocol-level error makes many agents crash or retry harder. A 
 
 ## Step 4: cover built-in tools too (Claude Code)
 
-Loops are not only MCP calls. A Bash command that keeps failing is the same problem. Add a `PreToolUse` hook in `.claude/settings.json`:
+Loops are not only MCP calls. A Bash command that keeps failing is the same problem. The quickest way is the Claude Code plugin, which installs the hook for you:
+
+```
+/plugin install blastgate --marketplace bzucker4/blastgate
+```
+
+Or add the `PreToolUse` hook to `.claude/settings.json` yourself:
 
 ```json
 {
@@ -124,6 +130,17 @@ npx blastgate audit verify
 ```
 
 `tail` shows each decision with the rule that fired. `verify` checks the hash chain and Ed25519 signatures, so you know the log you are reading is the log that was written.
+
+## Roll it out in shadow mode
+
+Before you enforce a new policy, run it with nothing blocked:
+
+```bash
+BLASTGATE_MODE=shadow claude          # or: npx blastgate mcp --shadow -- <server>
+npx blastgate audit tail              # ALLOW $ rm -rf ./build (shadow: would approve) [approve-destructive-shell]
+```
+
+Every call is still evaluated and signed into the log, with the would-be decision next to what actually happened. When the log only shows things you really want stopped, drop the flag.
 
 ## Test your policy in CI
 

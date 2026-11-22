@@ -1,0 +1,10 @@
+{
+  "name": "blastgate",
+  "version": "0.2.1",
+  "description": "Deterministic policy firewall for Claude Code tool calls: blocks destructive SQL and shell, secret-file reads and exfil endpoints, and holds risky calls for approval. Every decision goes to a signed audit log.",
+  "author": { "name": "Brian Zucker", "url": "https://github.com/bzucker4" },
+  "homepage": "https://github.com/bzucker4/blastgate",
+  "repository": "https://github.com/bzucker4/blastgate",
+  "license": "AGPL-3.0-only",
+  "keywords": ["security", "policy", "firewall", "mcp", "audit"]
+}
