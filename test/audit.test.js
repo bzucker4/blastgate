@@ -1,4 +1,5 @@
 import { test } from 'node:test';
+import { groupDecisions } from '../src/cli.js';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -67,4 +68,16 @@ test('secrets are redacted and long strings truncated', () => {
   assert.equal(out.nested.password, '[redacted]');
   assert.equal(out.list[0].token, '[redacted]');
   assert.match(out.nested.ok, /\[\+88 chars\]$/);
+});
+
+test('groupDecisions: one item per tool call, strictest result, order kept, no id means no grouping', () => {
+  const d = (seq, source, final, id) => ({ type: 'decision', seq, source, final, ...(id ? { tool_use_id: id } : {}) });
+  const items = groupDecisions([
+    d(0, 'claude-code', 'allow', 'x'),
+    d(1, 'claude-code', 'allow'),
+    d(2, 'mcp', 'deny', 'x'),
+    { type: 'execution', seq: 3, source: 'mcp', tool_use_id: 'x' },
+    d(4, 'mcp', 'allow'),
+  ]);
+  assert.deepEqual(items.map((i) => [i.entry.seq, i.layers.join('+')]), [[2, 'hook+proxy'], [1, 'hook'], [3, 'proxy'], [4, 'proxy']]);
 });

@@ -32,7 +32,7 @@ export async function runClaudeCodeHook({ policy, stdinText, gate }) {
   try {
     const payload = JSON.parse(stdinText || '{}');
     gate = gate ?? new Gate(policy, { cwd: payload.cwd ?? process.cwd() });
-    const outcome = await gate.check(toAction(payload), { interactive: false, source: 'claude-code' });
+    const outcome = await gate.check(toAction(payload), { interactive: false, source: 'claude-code', toolUseId: payload.tool_use_id });
     const r = outcome.result;
     if (outcome.shadow) return null;
     if (r.decision === 'deny') return respond('deny', denialText(outcome));

@@ -70,6 +70,34 @@ function auditFileFor(flags, posFile) {
   return path.resolve(policy.audit.path);
 }
 
+const LAYER = { 'claude-code': 'hook', mcp: 'proxy', exec: 'exec' };
+const STRICTNESS = { deny: 2, approve: 1, allow: 0 };
+
+/**
+ * One display item per tool call. Decision entries that share a tool_use_id
+ * (the Claude Code hook and the MCP proxy both checking the same call) are
+ * shown once, at the first entry's position, as the strictest result. The
+ * log itself keeps every entry.
+ */
+export function groupDecisions(entries) {
+  const out = [];
+  const byId = new Map();
+  for (const e of entries) {
+    const id = e.type === 'decision' && typeof e.tool_use_id === 'string' ? e.tool_use_id : null;
+    const layer = LAYER[e.source] ?? e.source;
+    if (id && byId.has(id)) {
+      const item = byId.get(id);
+      if (!item.layers.includes(layer)) item.layers.push(layer);
+      if ((STRICTNESS[e.final] ?? 0) > (STRICTNESS[item.entry.final] ?? 0)) item.entry = e;
+      continue;
+    }
+    const item = { entry: e, layers: [layer] };
+    if (id) byId.set(id, item);
+    out.push(item);
+  }
+  return out;
+}
+
 async function readStdin() {
   const chunks = [];
   for await (const ch of process.stdin) chunks.push(ch);
@@ -178,12 +206,13 @@ export async function main(argv) {
           return 0;
         }
         const n = Number(flags.n ?? 20);
-        for (const l of lines.slice(-n)) {
-          const e = JSON.parse(l);
+        for (const item of groupDecisions(lines.slice(-n).map((l) => JSON.parse(l)))) {
+          const e = item.entry;
           if (e.type === 'decision') {
             const what = e.action?.kind === 'shell' ? `$ ${e.action.command}` : `${e.action?.server ? `${e.action.server}/` : ''}${e.action?.tool}`;
             const shadow = e.mode === 'shadow' && e.decision !== 'allow' ? c.yellow(`(shadow: would ${e.decision}) `) : '';
-            console.log(`${c.dim(e.ts)} ${badge(e.final)} ${what} ${shadow}${c.dim(e.rule ? `[${e.rule}]` : '')}`);
+            const via = item.layers.length > 1 ? c.dim(`via ${item.layers.join('+')} `) : '';
+            console.log(`${c.dim(e.ts)} ${badge(e.final)} ${what} ${shadow}${via}${c.dim(e.rule ? `[${e.rule}]` : '')}`);
           } else {
             console.log(`${c.dim(e.ts)} ${c.gray(`${e.type}`)} ${c.dim(JSON.stringify({ ...e, v: undefined, seq: undefined, ts: undefined, kid: undefined, prev: undefined, hash: undefined, sig: undefined, type: undefined }))}`);
           }

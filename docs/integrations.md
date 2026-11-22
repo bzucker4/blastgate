@@ -51,6 +51,8 @@ What the hook returns:
 
 For speed, install globally (`npm i -g blastgate`) and use `"command": "blastgate hook claude-code"`.
 
+Using both layers is fine. Each MCP call is then checked by the hook and again by the proxy. The audit log keeps both decisions, tied together by Claude Code's `tool_use_id`, and `blastgate audit tail` shows them as one line marked `via hook+proxy`.
+
 ## Cursor
 
 `.cursor/mcp.json` (project) or `~/.cursor/mcp.json` (global):
